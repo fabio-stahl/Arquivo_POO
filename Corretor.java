@@ -46,14 +46,17 @@ public class Corretor {
             System.out.println("Erro ao ler respostas dos alunos: " + e.getMessage());
             return;
         }
-        media = total / listaNotas.size();
+        
         // Ordenações
         List<AlunoNota> porNota = new ArrayList<>(listaNotas);
         porNota.sort(Comparator.comparingInt(AlunoNota::getNota).reversed());
-        porNota.add(new AlunoNota("Média", media));
 
         List<AlunoNota> porNome = new ArrayList<>(listaNotas);
         porNome.sort(Comparator.comparing(AlunoNota::getNome));
+        media = total / listaNotas.size();
+        porNota.add(new AlunoNota("Média", media));
+        porNome.add(new AlunoNota("Média", media));
+
 
         // Arquivos de saída
         File arquivoNota = new File(diretorio, nomeDisciplina + "_resultado_notas.txt");
@@ -68,7 +71,7 @@ public class Corretor {
     }
 
     private static int corrigir(String gabarito, String respostaAluno) {
-        if (respostaAluno == "VVVVVVVVVV" || respostaAluno == "FFFFFFFFFF") {
+        if (respostaAluno.equals("VVVVVVVVVV") || respostaAluno.equals("FFFFFFFFFF")) {
             return 0;            
         }
         int acertos = 0;

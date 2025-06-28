@@ -26,6 +26,7 @@ public class Disciplina {
     }
 
     public static void cadastrarAlunos(Scanner scanner, File diretorio) {
+        String respostas;
         File txt = escolherDisciplina(scanner, diretorio);
         if (txt == null) return;
 
@@ -42,28 +43,35 @@ public class Disciplina {
                 continue;
             }
 
-            char[] resposta = new char[10];
-            System.out.println("Digite o gabarito do aluno (10 respostas - V ou F):");
+            while (true) {
+            System.out.println("Digite o gabarito correto (10 letras - V ou F):");
+            respostas = scanner.nextLine().toUpperCase().replaceAll("\\s+", "");
 
-            for (int i = 0; i < 10; i++) {
-                char entrada;
-                while (true) {
-                    System.out.print("Questão " + (i + 1) + " (V/F): ");
-                    entrada = scanner.next().toUpperCase().charAt(0);
-                    if (entrada == 'V' || entrada == 'F') break;
-                    System.out.println("Entrada inválida. Digite apenas V ou F.");
-                }
-                resposta[i] = entrada;
+            if (respostas.length() != 10) {
+                System.out.println("Erro: O gabarito deve conter exatamente 10 caracteres.");
+                continue;
             }
+
+            boolean valido = true;
+            for (char c : respostas.toCharArray()) {
+                if (c != 'V' && c != 'F') {
+                    valido = false;
+                    break;
+                }
+            }
+
+            if (!valido) {
+                System.out.println("Erro: Apenas caracteres V ou F são permitidos.");
+            } else {
+                break;
+            }
+        }
 
             scanner.nextLine(); // limpar buffer
             System.out.println("Nome do aluno:");
             String nomeAluno = scanner.nextLine();
 
-            StringBuilder sb = new StringBuilder();
-            for (char r : resposta) sb.append(r);
-
-            Aluno aluno = new Aluno(nomeAluno, sb.toString());
+            Aluno aluno = new Aluno(nomeAluno, respostas);
             aluno.salvarNoArquivo(txt);
         }
     }
@@ -116,7 +124,7 @@ public class Disciplina {
         if (todosArquivos != null) {
             int i = 0;
             for (File arq : todosArquivos) {
-                if (arq.isFile() && arq.getName().endsWith(".txt") && !arq.getName().contains("_gabarito")) {
+                if (arq.isFile() && arq.getName().endsWith(".txt") && !arq.getName().contains("_gabarito") && !arq.getName().contains("_resultado-alfabetico") && !arq.getName().contains("_resultado-notas")) {
                     System.out.println(i + " - " + arq.getName().replace(".txt", ""));
                     arquivosValidos.add(arq);
                     i++;
