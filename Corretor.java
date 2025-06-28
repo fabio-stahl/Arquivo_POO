@@ -4,14 +4,16 @@ import java.util.*;
 public class Corretor {
 
     public static void corrigirProvas(Scanner scanner, File diretorio) {
-        System.out.println("Digite o nome da disciplina:");
-        String nomeDisciplina = scanner.nextLine();
+        // Usa o método reutilizável da classe Disciplina
+        File disciplinaFile = Disciplina.escolherDisciplina(scanner, diretorio);
+        int media = 0;
+        if (disciplinaFile == null) return; // Nenhuma disciplina foi escolhida
 
+        String nomeDisciplina = disciplinaFile.getName().replace(".txt", "");
         File gabaritoFile = new File(diretorio, nomeDisciplina + "_gabarito.txt");
-        File alunosFile = new File(diretorio, nomeDisciplina + ".txt");
 
-        if (!gabaritoFile.exists() || !alunosFile.exists()) {
-            System.out.println("Disciplina ou gabarito não encontrados.");
+        if (!gabaritoFile.exists()) {
+            System.out.println("❌ Gabarito não encontrado para essa disciplina.");
             return;
         }
 
@@ -24,8 +26,9 @@ public class Corretor {
         }
 
         List<AlunoNota> listaNotas = new ArrayList<>();
+        int total = 0;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(alunosFile))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(disciplinaFile))) {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] partes = linha.split(" {3}"); // separa por 3 espaços
@@ -35,22 +38,24 @@ public class Corretor {
                 String nomeAluno = partes[1].trim();
 
                 int acertos = corrigir(gabarito, respostasAluno);
+                total += acertos; // Acumula o total de acertos
                 listaNotas.add(new AlunoNota(nomeAluno, acertos));
             }
+            
         } catch (IOException e) {
-            System.out.println("Erro ao ler alunos: " + e.getMessage());
+            System.out.println("Erro ao ler respostas dos alunos: " + e.getMessage());
             return;
         }
-
-        
+        media = total / listaNotas.size();
+        // Ordenações
         List<AlunoNota> porNota = new ArrayList<>(listaNotas);
         porNota.sort(Comparator.comparingInt(AlunoNota::getNota).reversed());
+        porNota.add(new AlunoNota("Média", media));
 
-        
         List<AlunoNota> porNome = new ArrayList<>(listaNotas);
         porNome.sort(Comparator.comparing(AlunoNota::getNome));
 
-        
+        // Arquivos de saída
         File arquivoNota = new File(diretorio, nomeDisciplina + "_resultado_notas.txt");
         File arquivoAlfabeto = new File(diretorio, nomeDisciplina + "_resultado_alfabetico.txt");
 
@@ -63,9 +68,11 @@ public class Corretor {
     }
 
     private static int corrigir(String gabarito, String respostaAluno) {
+        if (respostaAluno == "VVVVVVVVVV" || respostaAluno == "FFFFFFFFFF") {
+            return 0;            
+        }
         int acertos = 0;
         int tamanho = Math.min(gabarito.length(), respostaAluno.length());
-
         for (int i = 0; i < tamanho; i++) {
             if (gabarito.charAt(i) == respostaAluno.charAt(i)) {
                 acertos++;
@@ -85,7 +92,7 @@ public class Corretor {
         }
     }
 
-    
+    // Classe auxiliar interna para guardar nome e nota
     private static class AlunoNota {
         private final String nome;
         private final int nota;

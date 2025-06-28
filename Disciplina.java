@@ -108,7 +108,7 @@ public class Disciplina {
         }
     }
 
-    private static File escolherDisciplina(Scanner scanner, File diretorio) {
+    public static File escolherDisciplina(Scanner scanner, File diretorio) {
         File[] todosArquivos = diretorio.listFiles();
         List<File> arquivosValidos = new ArrayList<>();
 
