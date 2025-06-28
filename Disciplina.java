@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -124,7 +125,11 @@ public class Disciplina {
         if (todosArquivos != null) {
             int i = 0;
             for (File arq : todosArquivos) {
-                if (arq.isFile() && arq.getName().endsWith(".txt") && !arq.getName().contains("_gabarito") && !arq.getName().contains("_resultado-alfabetico") && !arq.getName().contains("_resultado-notas")) {
+                if (arq.isFile() && arq.getName().endsWith(".txt") &&
+                    !arq.getName().contains("_gabarito") &&
+                    !arq.getName().contains("_resultado_alfabetico") &&
+                    !arq.getName().contains("_resultado_notas")) {
+                    
                     System.out.println(i + " - " + arq.getName().replace(".txt", ""));
                     arquivosValidos.add(arq);
                     i++;
@@ -139,20 +144,20 @@ public class Disciplina {
 
         while (true) {
             System.out.print("Digite o número da disciplina: ");
-            int numero;
             try {
-                numero = scanner.nextInt();
-                scanner.nextLine(); // limpar buffer
-            } catch (Exception e) {
-                scanner.nextLine(); // limpa entrada inválida
-                System.out.println("Digite um número válido.");
-                continue;
-            }
+                int escolha = scanner.nextInt();
+                scanner.nextLine(); // limpar o buffer
 
-            if (numero >= 0 && numero < arquivosValidos.size()) {
-                return arquivosValidos.get(numero);
+                if (escolha >= 0 && escolha < arquivosValidos.size()) {
+                    return arquivosValidos.get(escolha);
+                } else {
+                    System.out.println("Número inválido. Tente novamente.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida. Digite um número.");
+                scanner.nextLine(); // limpar o buffer
             }
-            System.out.println("Número inválido. Tente novamente.");
         }
     }
+
 }
