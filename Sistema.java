@@ -18,12 +18,18 @@ public class Sistema {
             System.out.println("4 - Corrigir provas");
             System.out.println("0 - Sair");
 
-            int opcao = scanner.nextInt();
-            scanner.nextLine();
+            int opcao;
+            try {
+                opcao = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Digite um número.");
+                continue;
+            }
 
             switch (opcao) {
                 case 0 -> {
                     System.out.println("Saindo...");
+                    scanner.close();
                     return;
                 }
                 case 1 -> Disciplina.cadastrar(scanner, diretorio);
