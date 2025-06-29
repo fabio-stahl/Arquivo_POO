@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Disciplina {
+    private static final Tela tela = new Tela();
 
     public static void cadastrar(Scanner scanner, File diretorio) {
         diretorio.mkdirs();
 
-        System.out.println("Digite o nome da disciplina: ");
+        tela.pedirNomeDisciplina();
         String nome = scanner.nextLine();
 
         File arquivo = new File(diretorio, nome + ".txt");
@@ -17,12 +18,12 @@ public class Disciplina {
 
         try {
             if (arquivo.createNewFile() && gabarito.createNewFile()) {
-                System.out.println("Disciplina e gabarito criados com sucesso.");
+                tela.mensagemSimples("Disciplina e gabarito criados com sucesso.");
             } else {
-                System.out.println("A disciplina já existe ou houve erro.");
+                tela.mostrarErro("A disciplina já existe ou houve erro.");
             }
         } catch (IOException e) {
-            System.out.println("Erro: " + e.getMessage());
+            tela.mostrarErro("Erro: " + e.getMessage());
         }
     }
 
@@ -32,44 +33,44 @@ public class Disciplina {
         if (txt == null) return;
 
         while (true) {
-            System.out.println("Para continuar digite 1, para sair digite 0:");
+            tela.desejaContinuar();
             int decisao = scanner.nextInt();
             scanner.nextLine(); // limpar buffer
 
             if (decisao == 0) {
-                System.out.println("Saindo do cadastro de alunos.");
+                tela.mensagemSimples("Saindo do cadastro de alunos.");
                 return;
             } else if (decisao != 1) {
-                System.out.println("Opção inválida. Tente novamente.");
+                tela.mostrarErro("Opção inválida. Tente novamente.");
                 continue;
             }
 
             while (true) {
-            System.out.println("Digite o gabarito correto (10 letras - V ou F):");
-            respostas = scanner.nextLine().toUpperCase().replaceAll("\\s+", "");
+                tela.pedirGabaritoCadastrarAluno();
+                respostas = scanner.nextLine().toUpperCase().replaceAll("\\s+", "");
 
-            if (respostas.length() != 10) {
-                System.out.println("Erro: O gabarito deve conter exatamente 10 caracteres.");
-                continue;
-            }
+                if (respostas.length() != 10) {
+                    tela.mostrarErro("O gabarito deve conter exatamente 10 caracteres.");
+                    continue;
+                }
 
-            boolean valido = true;
-            for (char c : respostas.toCharArray()) {
-                if (c != 'V' && c != 'F') {
-                    valido = false;
+                boolean valido = true;
+                for (char c : respostas.toCharArray()) {
+                    if (c != 'V' && c != 'F') {
+                        valido = false;
+                        break;
+                    }
+                }
+
+                if (!valido) {
+                    tela.mostrarErro("Apenas caracteres V ou F são permitidos.");
+                } else {
                     break;
                 }
             }
 
-            if (!valido) {
-                System.out.println("Erro: Apenas caracteres V ou F são permitidos.");
-            } else {
-                break;
-            }
-        }
-
             scanner.nextLine(); // limpar buffer
-            System.out.println("Nome do aluno:");
+            tela.pedirNomeAluno();
             String nomeAluno = scanner.nextLine();
 
             Aluno aluno = new Aluno(nomeAluno, respostas);
@@ -123,27 +124,15 @@ public class Disciplina {
 
         System.out.println("Disciplinas disponíveis:");
         if (todosArquivos != null) {
-            int i = 0;
-            for (File arq : todosArquivos) {
-                if (arq.isFile() && arq.getName().endsWith(".txt") &&
-                    !arq.getName().contains("_gabarito") &&
-                    !arq.getName().contains("_resultado_alfabetico") &&
-                    !arq.getName().contains("_resultado_notas")) {
-                    
-                    System.out.println(i + " - " + arq.getName().replace(".txt", ""));
-                    arquivosValidos.add(arq);
-                    i++;
-                }
-            }
+            tela.pedirDisciplina(todosArquivos, arquivosValidos);
         }
 
         if (arquivosValidos.isEmpty()) {
-            System.out.println("Nenhuma disciplina cadastrada.");
+            tela.mensagemSimples("Nenhuma disciplina cadastrada.");
             return null;
         }
 
         while (true) {
-            System.out.print("Digite o número da disciplina: ");
             try {
                 int escolha = scanner.nextInt();
                 scanner.nextLine(); // limpar o buffer
@@ -151,10 +140,10 @@ public class Disciplina {
                 if (escolha >= 0 && escolha < arquivosValidos.size()) {
                     return arquivosValidos.get(escolha);
                 } else {
-                    System.out.println("Número inválido. Tente novamente.");
+                    tela.mostrarErro("Número inválido. Tente novamente.");
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Entrada inválida. Digite um número.");
+                tela.mostrarErro("Entrada inválida. Digite um número.");
                 scanner.nextLine(); // limpar o buffer
             }
         }
