@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Corretor {
+    private static final Tela tela = new Tela();
 
     public static void corrigirProvas(Scanner scanner, File diretorio) {
         // Usa o método reutilizável da classe Disciplina
@@ -13,7 +14,7 @@ public class Corretor {
         File gabaritoFile = new File(diretorio, nomeDisciplina + "_gabarito.txt");
 
         if (!gabaritoFile.exists()) {
-            System.out.println("❌ Gabarito não encontrado para essa disciplina.");
+            tela.mostrarErro("Gabarito não encontrado para essa disciplina.");
             return;
         }
 
@@ -21,7 +22,7 @@ public class Corretor {
         try (BufferedReader br = new BufferedReader(new FileReader(gabaritoFile))) {
             gabarito = br.readLine().trim();
         } catch (IOException e) {
-            System.out.println("Erro ao ler gabarito: " + e.getMessage());
+            tela.mostrarErro("Algo deu errado na leitura do gabarito -> " + e.getMessage());
             return;
         }
 
@@ -43,7 +44,7 @@ public class Corretor {
             }
             
         } catch (IOException e) {
-            System.out.println("Erro ao ler respostas dos alunos: " + e.getMessage());
+            tela.mostrarErro("Algo deu errado ao ler as respostas dos alunos -> " + e.getMessage());
             return;
         }
         
@@ -65,9 +66,7 @@ public class Corretor {
         salvarResultados(arquivoNota, porNota);
         salvarResultados(arquivoAlfabeto, porNome);
 
-        System.out.println("✅ Arquivos gerados:");
-        System.out.println(" - " + arquivoNota.getName());
-        System.out.println(" - " + arquivoAlfabeto.getName());
+        tela.mostrarArquivosGerados(arquivoNota, arquivoAlfabeto);
     }
 
     private static int corrigir(String gabarito, String respostaAluno) {
@@ -91,7 +90,7 @@ public class Corretor {
                 bw.newLine();
             }
         } catch (IOException e) {
-            System.out.println("Erro ao salvar resultados: " + e.getMessage());
+            tela.mostrarErro("Algo deu errado ao salvar resultados -> " + e.getMessage());
         }
     }
 

@@ -64,8 +64,8 @@ public class Tela {
             darDelay(1000);
         }
     }
+    //
 
-    // cadastro de disciplina
     public void pedirNomeDisciplina(){
         titulo("cadastrar disciplina");
 
@@ -73,7 +73,6 @@ public class Tela {
         System.out.print("-> ");
     }
 
-    // cadastro aluno
     public void pedirDisciplina(File[] todosArquivos, List<File> arquivosValidos){
         titulo("cadastrar alunos");
 
@@ -102,10 +101,10 @@ public class Tela {
         System.out.println("0 - Não");
         System.out.print("-> ");
     }
-    public void pedirGabaritoCadastrarAluno(){
-        titulo("cadastrar alunos");
+    public void pedirGabarito(String tipoCadastro, String correto){
+        titulo(tipoCadastro);
 
-        System.out.println("Digite o gabarito (10 letras - V ou F)");
+        System.out.println("Digite o gabarito " + correto + " (10 letras - V ou F)");
         System.out.print("-> ");
     }
     public void pedirNomeAluno(){
@@ -115,6 +114,13 @@ public class Tela {
         System.out.print("-> ");
     }
 
-    // cadastrar gabrito
+    public void mostrarArquivosGerados(File arquivoNota, File arquivoAlfabeto){
+        titulo("corrigindo provas");
 
+        System.out.println("ARQUIVOS GERADOS:");
+        System.out.println(" - " + arquivoNota.getName());
+        System.out.println(" - " + arquivoAlfabeto.getName());
+
+        darDelay(2000);
+    }
 }

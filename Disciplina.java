@@ -20,10 +20,10 @@ public class Disciplina {
             if (arquivo.createNewFile() && gabarito.createNewFile()) {
                 tela.mensagemSimples("Disciplina e gabarito criados com sucesso.");
             } else {
-                tela.mostrarErro("A disciplina já existe ou houve erro.");
+                tela.mostrarErro("A disciplina já existe ou houve outro erro.");
             }
         } catch (IOException e) {
-            tela.mostrarErro("Erro: " + e.getMessage());
+            tela.mostrarErro(e.getMessage());
         }
     }
 
@@ -46,7 +46,7 @@ public class Disciplina {
             }
 
             while (true) {
-                tela.pedirGabaritoCadastrarAluno();
+                tela.pedirGabarito("cadastrar alunos", "");
                 respostas = scanner.nextLine().toUpperCase().replaceAll("\\s+", "");
 
                 if (respostas.length() != 10) {
@@ -87,11 +87,11 @@ public class Disciplina {
 
         String respostas;
         while (true) {
-            System.out.println("Digite o gabarito correto (10 letras - V ou F):");
+            tela.pedirGabarito("cadastrar gabarito", "correto");
             respostas = scanner.nextLine().toUpperCase().replaceAll("\\s+", "");
 
             if (respostas.length() != 10) {
-                System.out.println("Erro: O gabarito deve conter exatamente 10 caracteres.");
+                tela.mostrarErro("O gabarito deve conter exatamente 10 caracteres.");
                 continue;
             }
 
@@ -104,7 +104,7 @@ public class Disciplina {
             }
 
             if (!valido) {
-                System.out.println("Erro: Apenas caracteres V ou F são permitidos.");
+                tela.mostrarErro("Apenas caracteres V ou F são permitidos.");
             } else {
                 break;
             }
@@ -112,9 +112,9 @@ public class Disciplina {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo))) {
             writer.write(respostas);
-            System.out.println("Gabarito salvo com sucesso.");
+            tela.mensagemSimples("Gabarito salvo com sucesso.");
         } catch (IOException e) {
-            System.out.println("Erro ao salvar gabarito: " + e.getMessage());
+            tela.mostrarErro("Algo deu errado na leitura do gabarito -> " + e.getMessage());
         }
     }
 
