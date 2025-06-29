@@ -31,6 +31,8 @@ public class Sistema {
                 case 2 -> Disciplina.cadastrarAlunos(scanner, diretorio);
                 case 3 -> Disciplina.cadastrarGabarito(scanner, diretorio);
                 case 4 -> Corretor.corrigirProvas(scanner, diretorio);
+                case 5 -> Visualizar.visualizarNotasAlfabeticas(scanner, diretorio);
+                case 6 -> Visualizar.visualizarNotasDecrescentes(scanner, diretorio);
                 default -> tela.mostrarErro("Opção inválida.");
             }
         }

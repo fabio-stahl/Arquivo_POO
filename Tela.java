@@ -1,4 +1,7 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -51,6 +54,8 @@ public class Tela {
         System.out.println("2 - Escolher Disciplina e cadastrar Alunos");
         System.out.println("3 - Cadastrar gabarito");
         System.out.println("4 - Corrigir provas");
+        System.out.println("5 - Visualizar notas (ordem alfabética)");
+        System.out.println("6 - Visualizar notas (ordem decrescente)");
         System.out.println("0 - Sair");
         System.out.print("-> ");
     }
@@ -122,5 +127,28 @@ public class Tela {
         System.out.println(" - " + arquivoAlfabeto.getName());
 
         darDelay(2000);
+    }
+
+    public void exibirNotasFormatadas(String titulo, File arquivo) {
+        titulo(titulo);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
+            System.out.println("ALUNO - NOTA");
+            System.out.println("------------");
+            
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                String[] partes = linha.split("\t");
+                if (partes.length == 2) {
+                    System.out.printf("%s - %s%n", partes[0], partes[1]);
+                } else {
+                    System.out.println(linha);
+                }
+            }
+            
+            System.out.println("\nPressione Enter para continuar...");
+        } catch (IOException e) {
+            mostrarErro("Erro ao ler o arquivo de resultados: " + e.getMessage());
+        }
     }
 }
